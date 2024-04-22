@@ -1,0 +1,12 @@
+{
+  "name": "frontend-project-11",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "rss-agregator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tatyana",
+  "license": "ISC"
+}
