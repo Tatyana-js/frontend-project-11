@@ -32,7 +32,6 @@ jobs:
         # Install and build project
         run: |
           make install
-          make build
         # Add environment variables
         
       - name: Run linter
