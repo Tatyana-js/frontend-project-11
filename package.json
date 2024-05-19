@@ -5,7 +5,7 @@
   "description": "My webpack project",
   "main": "./src/index.js",
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production npx webpack",
+    "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
