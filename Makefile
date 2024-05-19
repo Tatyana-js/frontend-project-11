@@ -3,6 +3,7 @@ install:
 
 build:
 	NODE_ENV=production npx webpack
+	rm -rf dist
 
 lint: 
 	npx eslint .
