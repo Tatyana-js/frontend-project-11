@@ -37,4 +37,8 @@ export default {
   output: {
     clean: true,
   },
+  devServer: {
+    hot: true,
+    open: true,
+  },
 };

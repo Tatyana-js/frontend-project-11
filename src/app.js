@@ -1,6 +1,9 @@
 import i18next from "i18next";
-import { validate } from './utils.js';
+import * as yup from 'yup';
+import validate, { proxyObj } from './utils.js';
 import watch from './view.js';
+import axios from 'axios';
+import resources from './locales/ru.js';
 
 export default () => {
   const defaultLanguage = 'ru';
@@ -21,7 +24,10 @@ export default () => {
       errors: [],
       isValid: false,
     },
-    uniqueUrls: [],
+    loadingProcess: {
+      status: 'waiting',
+      error: '',
+    },
     posts: [],
     feeds: [],
     ui: {
@@ -31,16 +37,28 @@ export default () => {
   };
   const { watchedState, renderForm } = watch(elements, i18n, state);
 
+  yup.setLocale({
+    string: {
+      url: () => ({ key: 'errors.invalidRss' }),
+    },
+    mixed: {
+      required: () => ({ key: 'errors.required' }),
+      notoneOf: () => ({ key: 'errors.existsRss' }),
+    },
+  });
+
   renderForm();
 
   elements.form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const url = formData.get('url');
+    const urlTarget = formData.get('url').trim();
+    const urlFeeds = watchedState.feeds.map(({ url }) => url);
 
-    validate(url, watchedState.uniqueUrls)
-      .then((url) => {} )
-      .catch(() => {} )
+    watchedState.loadingProcess.state = 'sending';
 
-})
-}
+    validate(urlTarget, urlFeeds)
+      .then(({ url }) => axios.get(proxyObj(url)))
+      .catch(() => {});
+  });
+};
