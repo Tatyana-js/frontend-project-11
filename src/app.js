@@ -1,8 +1,8 @@
 import i18next from "i18next";
 import * as yup from 'yup';
+import axios from 'axios';
 import validate, { proxyObj } from './utils.js';
 import watch from './view.js';
-import axios from 'axios';
 import resources from './locales/ru.js';
 
 export default () => {
