@@ -20,7 +20,7 @@ export default () => {
     form: document.querySelector('form'),
     input: document.getElementById('url-input'),
     label: document.querySelector('[for="url-input"]'),
-    example: document.querySelector('.text-muted'),
+    example: document.querySelector('p.mt-2.mb-0.text-secondary'),
     button: document.querySelector('[type="submit"]'),
   };
 
