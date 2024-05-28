@@ -6,7 +6,7 @@ const validate = (url, urlFeeds) => {
       .string()
       .trim()
       .required()
-      .notOneOf(urlFeeds, 'Ресурс не содержит валидный RSS'),
+      .notOneOf(urlFeeds),
   });
   return schema.validate({ url });
 };

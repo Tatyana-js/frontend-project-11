@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import i18next from 'i18next';
 import * as yup from 'yup';
 import axios from 'axios';
 import validate, { proxyObj } from './utils.js';
@@ -15,7 +15,13 @@ export default () => {
   });
 
   const elements = {
+    title: document.querySelector('h1'),
+    subtitle: document.querySelector('.lead'),
     form: document.querySelector('form'),
+    input: document.getElementById('url-input'),
+    label: document.querySelector('[for="url-input"]'),
+    example: document.querySelector('.text-muted'),
+    button: document.querySelector('[type="submit"]'),
   };
 
   const state = {
