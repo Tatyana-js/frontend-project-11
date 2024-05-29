@@ -9,10 +9,10 @@ export default (elements, i18n, state) => {
     });
   };
   const watchedState = onChange(state, (path) => {
-    // switch (path) {
-    //   case 'form.isValid':
-
-    // }
+    // eslint-disable-next-line default-case
+    switch (path) {
+      case 'form.isValid':
+    }
   });
   return {
     watchedState,
