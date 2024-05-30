@@ -14,7 +14,7 @@ export default (elements, i18n, state) => {
       element.textContent = t(`${key}`);
     });
   };
-  const watchedState = onChange(state, (path, value, prevValue) => {
+  const watchedState = onChange(state, (path) => {
     const { errorElement } = elements;
     switch (path) {
       case 'form.isValid':

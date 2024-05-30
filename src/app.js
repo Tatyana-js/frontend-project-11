@@ -10,7 +10,7 @@ const elements = {
     title: document.querySelector('h1'),
     subtitle: document.querySelector('.lead'),
     label: document.querySelector('[for="url-input"]'),
-    example: document.querySelector('p.mt-2.mb-0.text-body-secondary'),
+    example: document.querySelector('.example'),
     button: document.querySelector('[type="submit"]'),
   },
   form: document.querySelector('form'),
