@@ -10,11 +10,12 @@ const elements = {
     title: document.querySelector('h1'),
     subtitle: document.querySelector('.lead'),
     label: document.querySelector('[for="url-input"]'),
-    example: document.querySelector('p.mt-2.mb-0.text-secondary'),
+    example: document.querySelector('p.mt-2.mb-0.text-body-secondary'),
     button: document.querySelector('[type="submit"]'),
   },
   form: document.querySelector('form'),
   input: document.getElementById('url-input'),
+  errorElement: document.querySelector('.feedback'),
 };
 
 const state = {
@@ -40,7 +41,6 @@ yup.setLocale({
     url: () => ({ key: 'errors.invalidRss' }),
   },
   mixed: {
-    required: () => ({ key: 'errors.required' }),
     notoneOf: () => ({ key: 'errors.existsRss' }),
   },
 });

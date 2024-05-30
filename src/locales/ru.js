@@ -6,7 +6,6 @@ export default {
     example: 'Пример: https://ru.hexlet.io/lessons.rss',
     button: 'Добавить',
     errors: {
-      required: 'Заполните это поле',
       existsRss: 'RSS уже существует',
       invalidRss: 'Ресурс не содержит валидный RSS',
     },
