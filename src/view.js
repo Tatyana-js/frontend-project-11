@@ -23,7 +23,7 @@ export default (elements, i18n, state) => {
       case 'form.errors':
         errorElement.classList.remove('text-success');
         errorElement.classList.add('text-danger');
-        errorElement.textContent = t('invalidUrl');
+        errorElement.textContent = t('errors.invalidUrl');
         break;
       default:
     }

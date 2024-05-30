@@ -65,7 +65,10 @@ export default () => {
 
       validate(urlTarget, urlFeeds)
         .then(({ url }) => axios.get(proxyObj(url)))
-        .catch(() => {});
+        .catch((error) => {
+          watchedState.form.isValid = false;
+          watchedState.form.errors.push(error);
+        });
     });
   });
 };
