@@ -15,12 +15,13 @@ export default (elements, i18n, state) => {
     });
   };
   const watchedState = onChange(state, (path) => {
-    const { errorElement } = elements;
+    const { errorElement, input } = elements;
     switch (path) {
       case 'form.isValid':
         renderValid();
         break;
       case 'form.errors':
+        input.classList.add('is-invalid');
         errorElement.classList.remove('text-success');
         errorElement.classList.add('text-danger');
         errorElement.textContent = t('errors.invalidUrl');

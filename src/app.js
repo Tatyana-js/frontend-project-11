@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import * as yup from 'yup';
 import axios from 'axios';
-import validate, { proxyObj } from './utils.js';
+import validate, { createLink } from './utils.js';
 import watch from './view.js';
 import resources from './locales/index.js';
 
@@ -25,7 +25,7 @@ const state = {
     isValid: false,
   },
   loadingProcess: {
-    status: 'waiting',
+    status: 'waiting', // 'sending'
     error: '',
   },
   posts: [],
@@ -64,7 +64,7 @@ export default () => {
       watchedState.loadingProcess.state = 'sending';
 
       validate(urlTarget, urlFeeds)
-        .then(({ url }) => axios.get(proxyObj(url)))
+        .then(({ url }) => axios.get(createLink(url)))
         .catch((error) => {
           watchedState.form.isValid = false;
           watchedState.form.errors.push(error);

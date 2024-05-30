@@ -11,5 +11,10 @@ const validate = (url, urlFeeds) => {
   return schema.validate({ url });
 };
 
-export const proxyObj = (url) => url;
+export const createLink = (url) => {
+  const originsUrl = new URL('https://allorigins.hexlet.app/get?');
+  originsUrl.searchParams.set('disableCache', 'true');
+  originsUrl.searchParams.set('url', url);
+  return originsUrl;
+};
 export default validate;
