@@ -38,7 +38,7 @@ const state = {
 
 yup.setLocale({
   string: {
-    url: () => ({ key: 'errors.invalidRss' }),
+    url: () => ({ key: 'errors.invalidUrl' }),
   },
   mixed: {
     notoneOf: () => ({ key: 'errors.existsRss' }),
