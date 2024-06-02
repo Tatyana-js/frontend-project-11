@@ -15,6 +15,6 @@ export const createLink = (url) => {
   const originsUrl = new URL('https://allorigins.hexlet.app/get?');
   originsUrl.searchParams.set('disableCache', 'true');
   originsUrl.searchParams.set('url', url);
-  return originsUrl;
+  return originsUrl.toString();
 };
 export default validate;

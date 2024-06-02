@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import validate, { createLink } from './utils.js';
