@@ -4,7 +4,8 @@ import * as yup from 'yup';
 import axios from 'axios';
 import validate, { createLink } from './utils.js';
 import watch from './view.js';
-import resources from './locales/index.js';
+import ru from './locales/ru.js';
+import parse from './parser.js';
 
 const elements = {
   staticEl: {
@@ -52,7 +53,7 @@ export default () => {
   i18n.init({
     lng: defaultLanguage,
     debug: true,
-    resources,
+    resources: { ru },
   }).then(() => {
     const { watchedState, renderForm } = watch(elements, i18n, state);
     renderForm();
@@ -65,7 +66,11 @@ export default () => {
       watchedState.loadingProcess.state = 'sending';
 
       validate(urlTarget, urlFeeds)
-        .then(({ url }) => axios.get(createLink(url)))
+        .then(({ url }) => axios.get(createLink(url))
+          .then((responce) => {
+            const parseData = parse(responce.data);
+          })
+          .catch())
         .catch((error) => {
           watchedState.form.isValid = false;
           watchedState.form.errors.push(error);

@@ -17,4 +17,5 @@ export const createLink = (url) => {
   originsUrl.searchParams.set('url', url);
   return originsUrl.toString();
 };
+
 export default validate;
