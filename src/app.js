@@ -2,11 +2,11 @@ import i18next from 'i18next';
 import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
+import { uniqueId } from 'lodash';
 import validate, { createLink } from './utils.js';
 import watch from './view.js';
 import ru from './locales/ru.js';
 import parse from './parser.js';
-import { uniqueId } from 'lodash';
 
 const elements = {
   staticEl: {
