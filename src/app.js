@@ -6,6 +6,7 @@ import validate, { createLink } from './utils.js';
 import watch from './view.js';
 import ru from './locales/ru.js';
 import parse from './parser.js';
+import { uniqueId } from 'lodash';
 
 const elements = {
   staticEl: {
@@ -27,7 +28,7 @@ const state = {
     isValid: false,
   },
   loadingProcess: {
-    status: 'waiting', // 'sending'
+    status: 'waiting', // 'sending', 'finished'
     error: '',
   },
   posts: [],
@@ -69,6 +70,12 @@ export default () => {
         .then(({ url }) => axios.get(createLink(url))
           .then((responce) => {
             const parseData = parse(responce.data);
+            const { feed, posts } = parseData;
+            const id = uniqueId();
+            watchedState.feeds.push({ ...feed, id });
+            posts.forEach((post) => watchedState.posts.push({ ...post, id }));
+            watchedState.form.isValid = true;
+            watchedState.loadingProcess.status = 'finished';
           })
           .catch())
         .catch((error) => {

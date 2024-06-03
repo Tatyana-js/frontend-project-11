@@ -4,6 +4,7 @@ const validate = (url, urlFeeds) => {
   const schema = yup.object({
     url: yup
       .string()
+      .url()
       .trim()
       .required()
       .notOneOf(urlFeeds),
