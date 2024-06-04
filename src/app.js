@@ -72,12 +72,15 @@ export default () => {
             const parseData = parse(responce.data);
             const { feed, posts } = parseData;
             const id = uniqueId();
-            watchedState.feeds.push({ ...feed, id });
+            watchedState.feeds.push({ ...feed, feedId: id, link: urlTarget });
             posts.forEach((post) => watchedState.posts.push({ ...post, id }));
             watchedState.form.isValid = true;
             watchedState.loadingProcess.status = 'finished';
+            console.log(posts);
           })
-          .catch())
+          .catch((error) => {
+
+          }))
         .catch((error) => {
           watchedState.form.isValid = false;
           watchedState.form.errors.push(error);
