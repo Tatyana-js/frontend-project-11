@@ -7,7 +7,7 @@ export default {
     button: 'Добавить',
     errors: {
       existsRss: 'RSS уже существует',
-      invalidUrl: 'Ресурс не содержит валидный RSS',
+      invalidUrl: 'Ссылка должна быть валидным URL',
     },
   },
 };

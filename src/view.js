@@ -5,20 +5,17 @@ export default (elements, i18n, state) => {
   focus();
   const { t } = i18n;
 
-  const renderValid = () => {
-  };
-
   const renderForm = () => {
     Object.entries(elements.staticEl).forEach(([key, value]) => {
       const element = value;
       element.textContent = t(`${key}`);
     });
   };
-  const watchedState = onChange(state, (path) => {
-    const { errorElement, input } = elements;
+  const watchedState = onChange(state, (path, value) => {
+    const { errorElement, input, button } = elements;
     switch (path) {
-      case 'form.isValid':
-        renderValid();
+      case 'pending':
+        renderForm();
         break;
       case 'form.errors':
         input.classList.add('is-invalid');
@@ -26,7 +23,13 @@ export default (elements, i18n, state) => {
         errorElement.classList.add('text-danger');
         errorElement.textContent = t('errors.invalidUrl');
         break;
+      case 'loadingProcess.status':
+        if (value === 'sending') {
+          button.disabled = true;
+        }
+        break;
       default:
+        break;
     }
   });
   return {

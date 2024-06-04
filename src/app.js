@@ -25,7 +25,6 @@ const state = {
   form: {
     status: 'pending', // 'processed',
     errors: [],
-    isValid: false,
   },
   loadingProcess: {
     status: 'waiting', // 'sending', 'finished'
@@ -57,7 +56,9 @@ export default () => {
     resources: { ru },
   }).then(() => {
     const { watchedState, renderForm } = watch(elements, i18n, state);
+
     renderForm();
+
     elements.form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
@@ -69,20 +70,21 @@ export default () => {
       validate(urlTarget, urlFeeds)
         .then(({ url }) => axios.get(createLink(url))
           .then((responce) => {
+            console.log(responce);
             const parseData = parse(responce.data);
+            console.log(parseData);
             const { feed, posts } = parseData;
             const id = uniqueId();
             watchedState.feeds.push({ ...feed, feedId: id, link: urlTarget });
             posts.forEach((post) => watchedState.posts.push({ ...post, id }));
-            watchedState.form.isValid = true;
             watchedState.loadingProcess.status = 'finished';
-            console.log(posts);
+            watchedState.loadingProcess.error = '';
           })
           .catch((error) => {
-
+            console.log(error);
+            watchedState.form.errors.push(error);
           }))
         .catch((error) => {
-          watchedState.form.isValid = false;
           watchedState.form.errors.push(error);
         });
     });
