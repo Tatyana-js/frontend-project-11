@@ -23,12 +23,12 @@ const elements = {
 
 const state = {
   form: {
-    status: 'pending', // 'processed',
+    status: 'pending', // 'invalid', 'exist',
     errors: [],
   },
   loadingProcess: {
-    status: 'waiting', // 'sending', 'finished'
-    error: '',
+    status: 'sending', // 'finished'
+    error: '', // 'networkError', 'invalidRSS', 'existsRss'
   },
   posts: [],
   feeds: [],
@@ -70,8 +70,7 @@ export default () => {
       validate(urlTarget, urlFeeds)
         .then(({ url }) => axios.get(createLink(url))
           .then((responce) => {
-            console.log(responce);
-            const parseData = parse(responce.data);
+            const parseData = parse(responce.data.contents);
             console.log(parseData);
             const { feed, posts } = parseData;
             const id = uniqueId();
@@ -82,9 +81,15 @@ export default () => {
           })
           .catch((error) => {
             console.log(error);
-            watchedState.form.errors.push(error);
+            if (error.isAxiosError) {
+              watchedState.loadingProcess.error = 'networkError';
+            } else if (error.message === 'invalidRSS') {
+              watchedState.loadingProcess.error = 'invalidRSS';
+            }
+            watchedState.loadingProcess.error = 'existsRss';
           }))
         .catch((error) => {
+          watchedState.form.status = 'invalid';
           watchedState.form.errors.push(error);
         });
     });
