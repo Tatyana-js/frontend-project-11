@@ -59,35 +59,39 @@ export default () => {
 
     renderForm();
 
+    const loudFeedsAndPosts = (url) => {
+      axios.get(createLink(url))
+        .then((responce) => {
+          const parseData = parse(responce.data.contents);
+          const { feed, posts } = parseData;
+          const id = uniqueId();
+          watchedState.feeds.push({ ...feed, feedId: id, url });
+          console.log(watchedState.feeds);
+          posts.forEach((post) => watchedState.posts.push({ ...post, id }));
+          watchedState.loadingProcess.status = 'finished';
+          watchedState.loadingProcess.error = '';
+        })
+        .catch((error) => {
+          if (error.isAxiosError) {
+            watchedState.loadingProcess.error = 'networkError';
+          } else if (error.message === 'invalidRSS') {
+            watchedState.loadingProcess.error = 'invalidRSS';
+          } else {
+            watchedState.loadingProcess.error = 'existsRss';
+          }
+        });
+    };
+
     elements.form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
       const urlTarget = formData.get('url').trim();
       const urlFeeds = watchedState.feeds.map(({ url }) => url);
 
-      watchedState.loadingProcess.state = 'sending';
+      watchedState.loadingProcess.status = 'sending';
 
       validate(urlTarget, urlFeeds)
-        .then(({ url }) => axios.get(createLink(url))
-          .then((responce) => {
-            const parseData = parse(responce.data.contents);
-            console.log(parseData);
-            const { feed, posts } = parseData;
-            const id = uniqueId();
-            watchedState.feeds.push({ ...feed, feedId: id, link: urlTarget });
-            posts.forEach((post) => watchedState.posts.push({ ...post, id }));
-            watchedState.loadingProcess.status = 'finished';
-            watchedState.loadingProcess.error = '';
-          })
-          .catch((error) => {
-            console.log(error);
-            if (error.isAxiosError) {
-              watchedState.loadingProcess.error = 'networkError';
-            } else if (error.message === 'invalidRSS') {
-              watchedState.loadingProcess.error = 'invalidRSS';
-            }
-            watchedState.loadingProcess.error = 'existsRss';
-          }))
+        .then(({ url }) => loudFeedsAndPosts(url))
         .catch((error) => {
           watchedState.form.status = 'invalid';
           watchedState.form.errors.push(error);
