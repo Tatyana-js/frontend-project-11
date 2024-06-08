@@ -66,7 +66,6 @@ export default () => {
           const { feed, posts } = parseData;
           const id = uniqueId();
           watchedState.feeds.push({ ...feed, feedId: id, url });
-          console.log(watchedState.feeds);
           posts.forEach((post) => watchedState.posts.push({ ...post, id }));
           watchedState.loadingProcess.status = 'finished';
           watchedState.loadingProcess.error = '';

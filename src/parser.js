@@ -9,11 +9,12 @@ export default (data) => {
   const feedTitle = doc.querySelector('channel > title').textContent;
   const feedDescription = doc.querySelector('description').textContent;
   const feed = { title: feedTitle, description: feedDescription };
-  const items = doc.querySelectorAll('items');
+  const items = doc.querySelectorAll('item');
   const posts = Array.from(items).map((post) => {
     const title = post.querySelector('title').textContent;
     const description = post.querySelector('description').textContent;
-    return { title, description };
+    const url = post.querySelector('link').textContent;
+    return { title, description, url };
   });
   return { feed, posts };
 };

@@ -5,6 +5,10 @@ export default {
     label: 'Ссылка RSS',
     example: 'Пример: https://ru.hexlet.io/lessons.rss',
     button: 'Добавить',
+    feedback: 'RSS успешно загружен',
+    feedTitle: 'Фиды',
+    postsTitle: 'Посты',
+    postsButton: 'Просмотр',
     errors: {
       existsRss: 'RSS уже существует',
       invalidUrl: 'Ссылка должна быть валидным URL',
