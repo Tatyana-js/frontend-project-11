@@ -15,5 +15,9 @@ export default {
       invalidRSS: 'Ресурс не содержит валидный RSS',
       networkError: 'Ошибка сети',
     },
+    modal: {
+      modalLink: 'Читать полностью',
+      modalBody: 'Закрыть',
+    },
   },
 };

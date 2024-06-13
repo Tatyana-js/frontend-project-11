@@ -11,6 +11,7 @@ export default (elements, i18n, state) => {
       element.textContent = t(`${key}`);
     });
   };
+
   const renderBlock = (title) => {
     const card = document.createElement('div');
     const cardBody = document.createElement('div');
@@ -63,10 +64,14 @@ export default (elements, i18n, state) => {
       link.classList.add('fw-bold');
       link.setAttribute('href', url);
       link.setAttribute('id', id);
+      link.setAttribute('target', '_blank');
       link.textContent = title;
 
       button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
       button.setAttribute('type', 'button');
+      button.setAttribute('data-id', id);
+      button.setAttribute('data-bs-toggle', 'modal');
+      button.setAttribute('data-bs-target', '#modal');
       button.textContent = t('postsButton');
 
       li.append(link, button);
@@ -76,20 +81,34 @@ export default (elements, i18n, state) => {
     });
   };
 
+  const renderModal = () => {
+    const activePost = state.posts.find(({ id }) => id === state.ui.activePostId);
+    const modalTitle = document.querySelector('.modal-title');
+    const modalBody = document.querySelector('.modal-body');
+    const modalLink = document.querySelector('[target="_blank"]');
+    const modalBtn = document.querySelector('[data-bs-dismiss="modal"]');
+
+    const { title, description, url } = activePost;
+    modalTitle.textContent = title;
+    modalBody.textContent = description;
+    modalLink.textContent = t('modal.modalLink');
+    modalBtn.textContent = t('modal.modalBody');
+    modalLink.url = url;
+  };
+
   const watchedState = onChange(state, (path, value) => {
     const {
       errorElement, input, form, staticEl,
     } = elements;
     switch (path) {
       case 'form.status':
-        if (value === 'pending') {
-          renderForm();
-        } else if (value === 'invalid') {
-          input.classList.add('is-invalid');
-          errorElement.classList.remove('text-success');
-          errorElement.classList.add('text-danger');
-          errorElement.textContent = t('errors.invalidUrl');
-        }
+        renderForm();
+        break;
+      case 'form.errors':
+        errorElement.classList.remove('text-success');
+        errorElement.classList.add('text-danger');
+        errorElement.textContent = t(state.form.errors);
+        input.classList.add('is-invalid');
         break;
       case 'loadingProcess.status':
         if (value === 'sending') {
@@ -108,8 +127,8 @@ export default (elements, i18n, state) => {
         }
         break;
       case 'loadingProcess.error':
+        input.classList.remove('is-invalid');
         if (value === 'networkError') {
-          input.classList.remove('is-invalid');
           errorElement.textContent = t('errors.networkError');
         }
         if (value === 'invalidRSS') {
@@ -117,11 +136,18 @@ export default (elements, i18n, state) => {
           errorElement.classList.add('text-danger');
           errorElement.textContent = t('errors.invalidRSS');
         }
-        if (value === 'existsRss') {
-          input.classList.add('is-invalid');
-          errorElement.classList.add('text-danger');
-          errorElement.textContent = t('errors.existsRss');
-        }
+        break;
+      case 'ui.touchedPostId':
+        state.ui.touchedPostId.forEach((postId) => {
+          const post = document.getElementById(postId);
+          if (!post.classList.contains('fw-normal')) {
+            post.classList.remove('fw-bold');
+            post.classList.add('fw-normal', 'link-secondary');
+          }
+        });
+        break;
+      case 'ui.activePostId':
+        renderModal();
         break;
       default:
         break;

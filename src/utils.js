@@ -1,13 +1,13 @@
 import * as yup from 'yup';
 
 const validate = (url, urlFeeds) => {
-  const schema = yup.object({
+  const schema = yup.object().shape({
     url: yup
       .string()
-      .url()
+      .url('errors.invalidUrl')
       .trim()
       .required()
-      .notOneOf(urlFeeds),
+      .notOneOf(urlFeeds, 'errors.existsRss'),
   });
   return schema.validate({ url });
 };

@@ -1,8 +1,8 @@
 import i18next from 'i18next';
 import 'bootstrap';
-import * as yup from 'yup';
 import axios from 'axios';
-import { uniqueId } from 'lodash';
+import _ from 'lodash';
+import * as yup from 'yup';
 import validate, { createLink } from './utils.js';
 import watch from './view.js';
 import ru from './locales/ru.js';
@@ -19,33 +19,25 @@ const elements = {
   form: document.querySelector('form'),
   input: document.getElementById('url-input'),
   errorElement: document.querySelector('.feedback'),
+  postsContainer: document.querySelector('.posts'),
 };
 
 const state = {
   form: {
-    status: 'pending', // 'invalid', 'exist',
-    errors: [],
+    status: 'pending',
+    errors: '', //  'invalidUrl', 'existsRss'
   },
   loadingProcess: {
     status: 'sending', // 'finished'
-    error: '', // 'networkError', 'invalidRSS', 'existsRss'
+    error: '', // 'networkError', 'invalidRSS'
   },
   posts: [],
   feeds: [],
   ui: {
-    activePostsId: null,
-    touchedPostId: [],
+    activePostId: '',
+    touchedPostId: new Set(),
   },
 };
-
-yup.setLocale({
-  string: {
-    url: () => ({ key: 'errors.invalidUrl' }),
-  },
-  mixed: {
-    notoneOf: () => ({ key: 'errors.existsRss' }),
-  },
-});
 
 export default () => {
   const defaultLanguage = 'ru';
@@ -57,29 +49,34 @@ export default () => {
   }).then(() => {
     const { watchedState, renderForm } = watch(elements, i18n, state);
 
+    yup.setLocale({
+      mixed: {
+        url: () => ({ key: 'errors.invalidUrl' }),
+        notoneOf: () => ({ key: 'errors.existsRss' }),
+      },
+    });
     renderForm();
 
-    const loudFeedsAndPosts = (url) => {
-      axios.get(createLink(url))
+    const getUpdateContent = (feeds) => {
+      const promises = feeds.map(({ url }) => axios.get(createLink(url))
         .then((responce) => {
           const parseData = parse(responce.data.contents);
-          const { feed, posts } = parseData;
-          const id = uniqueId();
-          watchedState.feeds.push({ ...feed, feedId: id, url });
-          posts.forEach((post) => watchedState.posts.push({ ...post, id }));
-          watchedState.loadingProcess.status = 'finished';
-          watchedState.loadingProcess.error = '';
+          const { posts } = parseData;
+          const existPostsTitle = new Set(watchedState.posts.map((post) => post.title));
+          const newPosts = posts.filter((post) => !_.has(existPostsTitle, post.title));
+          const updatePosts = newPosts.map((post) => ({ ...post, id: _.uniqueId() }));
+          watchedState.posts = [...updatePosts, ...watchedState.posts];
         })
-        .catch((error) => {
-          if (error.isAxiosError) {
-            watchedState.loadingProcess.error = 'networkError';
-          } else if (error.message === 'invalidRSS') {
-            watchedState.loadingProcess.error = 'invalidRSS';
-          } else {
-            watchedState.loadingProcess.error = 'existsRss';
-          }
+        .catch((e) => {
+          throw e;
+        }));
+
+      Promise.all(promises)
+        .finally(() => {
+          setTimeout(() => getUpdateContent(watchedState.feeds), 5000);
         });
     };
+    getUpdateContent(watchedState.feeds);
 
     elements.form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -90,11 +87,34 @@ export default () => {
       watchedState.loadingProcess.status = 'sending';
 
       validate(urlTarget, urlFeeds)
-        .then(({ url }) => loudFeedsAndPosts(url))
+        .then(({ url }) => axios.get(createLink(url)))
+        .then((responce) => {
+          const parseData = parse(responce.data.contents);
+          const { feed, posts } = parseData;
+          watchedState.feeds.push({ ...feed, feedId: _.uniqueId(), url: urlTarget });
+          posts.forEach((post) => watchedState.posts.push({ ...post, id: _.uniqueId() }));
+          watchedState.loadingProcess.status = 'finished';
+          watchedState.loadingProcess.error = '';
+        })
         .catch((error) => {
-          watchedState.form.status = 'invalid';
-          watchedState.form.errors.push(error);
+          if (error.isAxiosError) {
+            watchedState.loadingProcess.error = 'networkError';
+          } else if (error.message === 'invalidRSS') {
+            watchedState.loadingProcess.error = 'invalidRSS';
+          } else {
+            watchedState.form.errors = error.message;
+          }
         });
+    });
+
+    elements.postsContainer.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        watchedState.ui.touchedPostId.add(e.target.id);
+      }
+      if (e.target.tagName === 'BUTTON') {
+        watchedState.ui.touchedPostId.add(e.target.dataset.id);
+        watchedState.ui.activePostId = e.target.dataset.id;
+      }
     });
   });
 };
