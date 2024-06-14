@@ -29,7 +29,7 @@ export default (elements, i18n, state) => {
 
   const renderFeeds = () => {
     const feedContainer = document.querySelector('.feeds');
-    const cardFeed = renderBlock(t('feedTitle'));
+    const feedlist = renderBlock(t('feedTitle'));
     const lists = document.createElement('ul');
     lists.classList.add('list-group', 'border-0', 'rounded-0');
 
@@ -45,14 +45,14 @@ export default (elements, i18n, state) => {
 
       li.append(h3, p);
       lists.append(li);
-      cardFeed.append(lists);
-      feedContainer.append(cardFeed);
+      feedlist.append(lists);
+      feedContainer.append(feedlist);
     });
   };
 
   const renderPosts = () => {
     const postsContainer = document.querySelector('.posts');
-    const cardPosts = renderBlock(t('postsTitle'));
+    const postsList = renderBlock(t('postsTitle'));
     const lists = document.createElement('ul');
     lists.classList.add('list-group', 'border-0', 'rounded-0');
 
@@ -76,8 +76,8 @@ export default (elements, i18n, state) => {
 
       li.append(link, button);
       lists.append(li);
-      cardPosts.append(lists);
-      postsContainer.append(cardPosts);
+      postsList.append(lists);
+      postsContainer.append(postsList);
     });
   };
 
