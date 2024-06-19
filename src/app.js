@@ -2,8 +2,7 @@ import i18next from 'i18next';
 import 'bootstrap';
 import axios from 'axios';
 import _ from 'lodash';
-import * as yup from 'yup';
-import validate, { createLink } from './utils.js';
+import validate, { createLink } from './locales/utils.js';
 import watch from './view.js';
 import ru from './locales/ru.js';
 import parse from './parser.js';
@@ -49,14 +48,9 @@ export default () => {
   }).then(() => {
     const { watchedState, renderForm } = watch(elements, i18n, state);
 
-    yup.setLocale({
-      mixed: {
-        url: () => ({ key: 'errors.invalidUrl' }),
-        notoneOf: () => ({ key: 'errors.existsRss' }),
-      },
-    });
     renderForm();
 
+    const timeout = 5000;
     const getUpdateContent = (feeds) => {
       const promises = feeds.map(({ url }) => axios.get(createLink(url))
         .then((responce) => {
@@ -73,12 +67,12 @@ export default () => {
 
       Promise.all(promises)
         .finally(() => {
-          setTimeout(() => getUpdateContent(watchedState.feeds), 5000);
+          setTimeout(() => getUpdateContent(watchedState.feeds), timeout);
         });
     };
     getUpdateContent(watchedState.feeds);
 
-    elements.form.addEventListener('submit', async (e) => {
+    elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
       const urlTarget = formData.get('url').trim();

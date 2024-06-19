@@ -1,5 +1,12 @@
 import * as yup from 'yup';
 
+yup.setLocale({
+  mixed: {
+    url: () => ({ key: 'errors.invalidUrl' }),
+    notoneOf: () => ({ key: 'errors.existsRss' }),
+  },
+});
+
 const validate = (url, urlFeeds) => {
   const schema = yup.object().shape({
     url: yup
