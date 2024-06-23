@@ -38,6 +38,8 @@ const state = {
   },
 };
 
+const timeout = 5000;
+
 export default () => {
   const defaultLanguage = 'ru';
   const i18n = i18next.createInstance();
@@ -50,7 +52,6 @@ export default () => {
 
     renderForm();
 
-    const timeout = 5000;
     const getUpdateContent = (feeds) => {
       const promises = feeds.map(({ url }) => axios.get(createLink(url))
         .then((responce) => {
