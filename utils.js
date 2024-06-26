@@ -1,11 +1,7 @@
 import * as yup from 'yup';
+import local from './src/locales/locales.js';
 
-yup.setLocale({
-  mixed: {
-    url: () => ({ key: 'errors.invalidUrl' }),
-    notoneOf: () => ({ key: 'errors.existsRss' }),
-  },
-});
+yup.setLocale(local);
 
 const validate = (url, urlFeeds) => {
   const schema = yup.object().shape({

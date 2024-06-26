@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import 'bootstrap';
 import axios from 'axios';
 import _ from 'lodash';
-import validate, { createLink } from './locales/utils.js';
+import validate, { createLink } from '../utils.js';
 import watch from './view.js';
 import ru from './locales/ru.js';
 import parse from './parser.js';
