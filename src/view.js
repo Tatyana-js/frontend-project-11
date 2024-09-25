@@ -29,7 +29,7 @@ export default (elements, i18n, state) => {
 
   const renderFeeds = () => {
     const feedContainer = document.querySelector('.feeds');
-    renderBlock(t('feedTitle'));
+    const blok = renderBlock(t('feedTitle'));
     const lists = document.createElement('ul');
     lists.classList.add('list-group', 'border-0', 'rounded-0');
 
@@ -45,13 +45,13 @@ export default (elements, i18n, state) => {
 
       li.append(h3, p);
       lists.append(li);
-      feedContainer.append(lists);
+      feedContainer.append(blok, lists);
     });
   };
 
   const renderPosts = () => {
     const postsContainer = document.querySelector('.posts');
-    renderBlock(t('postsTitle'));
+    const post = renderBlock(t('postsTitle'));
     const lists = document.createElement('ul');
     lists.classList.add('list-group', 'border-0', 'rounded-0');
 
@@ -75,7 +75,7 @@ export default (elements, i18n, state) => {
 
       li.append(link, button);
       lists.append(li);
-      postsContainer.append(lists);
+      postsContainer.append(post, lists);
     });
   };
 
