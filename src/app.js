@@ -56,8 +56,8 @@ export default () => {
         .then((responce) => {
           const parseData = parse(responce.data.contents);
           const { posts } = parseData;
-          const existPostsTitle = new Set(watchedState.posts.map((post) => post.title));
-          const newPosts = posts.filter((post) => !_.has(existPostsTitle, post.title));
+          const existPosts = watchedState.posts.map((post) => post.url);
+          const newPosts = posts.filter((post) => !existPosts.includes(post.url));
           const updatePosts = newPosts.map((post) => ({ ...post, id: _.uniqueId() }));
           watchedState.posts = [...updatePosts, ...watchedState.posts];
         })
@@ -70,6 +70,7 @@ export default () => {
           setTimeout(() => getUpdateContent(watchedState.feeds), timeout);
         });
     };
+
     getUpdateContent(watchedState.feeds);
 
     elements.form.addEventListener('submit', (e) => {

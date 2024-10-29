@@ -29,6 +29,7 @@ export default (elements, i18n, state) => {
 
   const renderFeeds = () => {
     const feedContainer = document.querySelector('.feeds');
+    feedContainer.innerHTML = '';
     const blok = renderBlock(t('feedTitle'));
     const lists = document.createElement('ul');
     lists.classList.add('list-group', 'border-0', 'rounded-0');
@@ -45,12 +46,13 @@ export default (elements, i18n, state) => {
 
       li.append(h3, p);
       lists.append(li);
-      feedContainer.append(blok, lists);
     });
+    feedContainer.append(blok, lists);
   };
 
   const renderPosts = () => {
     const postsContainer = document.querySelector('.posts');
+    postsContainer.innerHTML = '';
     const post = renderBlock(t('postsTitle'));
     const lists = document.createElement('ul');
     lists.classList.add('list-group', 'border-0', 'rounded-0');
@@ -75,8 +77,8 @@ export default (elements, i18n, state) => {
 
       li.append(link, button);
       lists.append(li);
-      postsContainer.append(post, lists);
     });
+    postsContainer.append(post, lists);
   };
 
   const renderModal = () => {
@@ -94,7 +96,7 @@ export default (elements, i18n, state) => {
     modalLink.url = url;
   };
 
-  const watchedState = onChange(state, (path, value) => {
+  const watchedState = onChange(state, (path, value, previousValue) => {
     const {
       errorElement, input, form, staticEl,
     } = elements;
@@ -133,6 +135,18 @@ export default (elements, i18n, state) => {
           errorElement.classList.remove('text-success');
           errorElement.classList.add('text-danger');
           errorElement.textContent = t('errors.invalidRSS');
+        }
+        break;
+      case 'posts':
+        if (value.length !== previousValue.length) {
+          renderPosts();
+        }
+        break;
+      case 'feeds':
+        if (value) {
+          renderFeeds();
+          form.reset();
+          input.focus();
         }
         break;
       case 'ui.touchedPostId':
