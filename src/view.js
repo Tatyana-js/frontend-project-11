@@ -96,6 +96,22 @@ export default (elements, i18n, state) => {
     modalLink.url = url;
   };
 
+  const renderFinishedProcess = () => {
+    const { staticEl, input, errorElement } = elements;
+    staticEl.button.disabled = false;
+    input.classList.remove('is-invalid');
+    errorElement.classList.remove('text-danger');
+    errorElement.classList.add('text-success');
+    errorElement.textContent = t('feedback');
+  };
+
+  const renderInvalidRSS = () => {
+    const { errorElement } = elements;
+    errorElement.classList.remove('text-success');
+    errorElement.classList.add('text-danger');
+    errorElement.textContent = t('errors.invalidRSS');
+  };
+
   const watchedState = onChange(state, (path, value, previousValue) => {
     const {
       errorElement, input, form, staticEl,
@@ -115,11 +131,7 @@ export default (elements, i18n, state) => {
           staticEl.button.disabled = true;
           errorElement.textContent = '';
         } else if (value === 'finished') {
-          staticEl.button.disabled = false;
-          input.classList.remove('is-invalid');
-          errorElement.classList.remove('text-danger');
-          errorElement.classList.add('text-success');
-          errorElement.textContent = t('feedback');
+          renderFinishedProcess();
           form.reset();
           input.focus();
           renderFeeds();
@@ -132,9 +144,7 @@ export default (elements, i18n, state) => {
           errorElement.textContent = t('errors.networkError');
         }
         if (value === 'invalidRSS') {
-          errorElement.classList.remove('text-success');
-          errorElement.classList.add('text-danger');
-          errorElement.textContent = t('errors.invalidRSS');
+          renderInvalidRSS();
         }
         break;
       case 'posts':
